@@ -76,7 +76,7 @@ def num_to_msg(n: int) -> str:
     return "".join(chars)
 ```
 
-<img src="/assets/img/posts/dodecacrypt/encoding.png" width="50%" style="display:block; margin:0 auto;" alt="Encoding">
+<img src="/assets/img/posts/dodecacrypt/encoding.png" width="100%" style="display:block; margin:0 auto;" alt="Encoding">
 
 For those who are unfamiliar with dodecahedron symmetry group – 120 is the size of such group. Meaning that every dodecahedron with no two matching sides can be put on a table in 120 different ways. 
 
