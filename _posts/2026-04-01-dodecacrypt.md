@@ -28,8 +28,8 @@ The first thing I noticed was a weird length of a message to length of a ciphert
 As we can see there isn’t a simple pattern in this ct. Then, let’s check the key. This is where the magic starts. No matter what you’ll type the key is always 12 chars long. And it only allows letters (the whole cipher uses upper case letters and when given a lower case letter it just uses to_upper on it. Hence, I’ll just type letters everywhere instead of upper case letters), 12? In a dodecahedron? I wonder why?. I then started encrypting a single char message with a single char key. As you imagine, every letter has its own color corresponding to it. And to make sure that every position in a key corresponds to a particular position on a big dode (yeah the reference to the big doge meme [big doge](https://ih1.redbubble.net/image.1286047921.7977/st,small,507x507-pad,600x600,f8f8f8.jpg)). One thing I also noticed is that each dodecahedron influences all of the dodecahedrons that follow, but not the ones that precede it. 
 
 <div style="display:flex; gap:8px; justify-content:center">
-  <img src="/assets/img/posts/dodecacrypt/keyA.png" width="48%" alt="Key A">
-  <img src="/assets/img/posts/dodecacrypt/keyB.png" width="48%" alt="Key B">
+  <img src="/assets/img/posts/dodecacrypt/keyA.png" width="100%" alt="Key A">
+  <img src="/assets/img/posts/dodecacrypt/keyB.png" width="100%" alt="Key B">
 </div>
 
 <p align="center">
@@ -38,7 +38,7 @@ As we can see there isn’t a simple pattern in this ct. Then, let’s check the
 
 Knowing all of this let’s find which letters create the key. We’ll find it out by extracting them from the flag. Let’s notice that there are 12 distinct colors in our ct meaning we have 12 different letters in a key. The letters forming the key are: 
 
-<img src="/assets/img/posts/dodecacrypt/letters.png" width="50%" style="display:block; margin:0 auto;" alt="Letters">
+<img src="/assets/img/posts/dodecacrypt/letters.png" width="100%" style="display:block; margin:0 auto;" alt="Letters">
 
 ### **Step 2 - remembering icosahedral groups and finding boundaries:**
 
