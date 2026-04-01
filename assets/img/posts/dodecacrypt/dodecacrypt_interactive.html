@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DodecaCrypt – Interactive</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a1a2e; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #hint {
+    position: fixed; bottom: 16px; left: 0; right: 0;
+    text-align: center; color: #888; font-family: sans-serif;
+    font-size: 13px; pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<canvas id="dc-canvas"></canvas>
+<div id="hint">drag to rotate &nbsp;·&nbsp; scroll to zoom</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const canvas = document.getElementById('dc-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0x1a1a2e, 1);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(0, 0, 4.5);
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+const dl = new THREE.DirectionalLight(0xffffff, 0.8);
+dl.position.set(5, 5, 5);
+scene.add(dl);
+const dl2 = new THREE.DirectionalLight(0x8888ff, 0.3);
+dl2.position.set(-5, -3, -5);
+scene.add(dl2);
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+const phi = (1 + Math.sqrt(5)) / 2;
+const ip = 1 / phi;
+
+const V = [
+  [-1,-1,-1],[-1,-1,1],[-1,1,-1],[-1,1,1],[1,-1,-1],[1,-1,1],[1,1,-1],[1,1,1],
+  [0,-ip,-phi],[0,-ip,phi],[0,ip,-phi],[0,ip,phi],
+  [-ip,-phi,0],[-ip,phi,0],[ip,-phi,0],[ip,phi,0],
+  [-phi,0,-ip],[phi,0,-ip],[-phi,0,ip],[phi,0,ip]
+];
+
+function d3(a,b){ return Math.sqrt(V[a].reduce((s,_,i)=>(s+(V[a][i]-V[b][i])**2),0)); }
+function sub(a,b){ return a.map((v,i)=>v-b[i]); }
+function cross(a,b){ return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]]; }
+function dot(a,b){ return a.reduce((s,v,i)=>s+v*b[i],0); }
+function norm(a){ const m=Math.sqrt(dot(a,a)); return a.map(v=>v/m); }
+
+const edges = new Set();
+for(let i=0;i<20;i++) for(let j=i+1;j<20;j++) if(d3(i,j)<1.24) edges.add(`${Math.min(i,j)}-${Math.max(i,j)}`);
+const ek=(a,b)=>`${Math.min(a,b)}-${Math.max(a,b)}`;
+
+function combinations(arr, k) {
+  const res=[];
+  function helper(start,cur){
+    if(cur.length===k){res.push([...cur]);return;}
+    for(let i=start;i<arr.length;i++){cur.push(arr[i]);helper(i+1,cur);cur.pop();}
+  }
+  helper(0,[]);
+  return res;
+}
+
+const faces=[];
+for(const combo of combinations(Array.from({length:20},(_,i)=>i), 5)){
+  const pts=combo.map(i=>V[i]);
+  const nn=cross(sub(pts[1],pts[0]),sub(pts[2],pts[0]));
+  const nnm=Math.sqrt(dot(nn,nn));
+  if(nnm<1e-8) continue;
+  const u=nn.map(v=>v/nnm);
+  if(pts.slice(2).some(p=>Math.abs(dot(sub(p,pts[0]),u))>1e-6)) continue;
+  if(combo.some(v=>combo.filter(x=>x!==v&&edges.has(ek(v,x))).length!==2)) continue;
+  const s=new Set(combo);
+  let seen=new Set(),stk=[combo[0]];
+  while(stk.length){const v=stk.pop();if(seen.has(v))continue;seen.add(v);[...s].forEach(x=>{if(x!==v&&edges.has(ek(x,v))&&!seen.has(x))stk.push(x);});}
+  if(seen.size!==5) continue;
+  let pos=0,neg=0,ok=true;
+  for(let i=0;i<20;i++){
+    if(s.has(i)) continue;
+    const dd=dot(sub(V[i],pts[0]),u);
+    if(dd>1e-6) pos++;
+    if(dd<-1e-6) neg++;
+    if(pos>0&&neg>0){ok=false;break;}
+  }
+  if(!ok) continue;
+  const ce=pts[0].map((_,i)=>pts.reduce((s,p)=>s+p[i],0)/pts.length);
+  const fn=norm(cross(sub(pts[1],pts[0]),sub(pts[2],pts[0])));
+  let axU=norm(sub(pts[0],ce));
+  const axV=norm(cross(fn,axU));
+  const angs=combo.map(id=>[Math.atan2(dot(sub(V[id],ce),axV),dot(sub(V[id],ce),axU)),id]);
+  angs.sort((a,b)=>a[0]-b[0]);
+  faces.push(angs.map(a=>a[1]));
+}
+
+const COLORS = [
+  0xffd8b1, 0xe6194b, 0xffe119, 0xaaffc3, 0x800000,
+  0x46f0f0, 0x000075, 0xbcf60c, 0xf032e6, 0xe6beff,
+  0x3cb44b, 0xaa00ff
+];
+
+const group = new THREE.Group();
+scene.add(group);
+
+faces.forEach((faceIdx, fi) => {
+  const verts = faceIdx.map(i => new THREE.Vector3(...V[i]));
+  const ce3 = verts.reduce((s,v)=>s.clone().add(v), new THREE.Vector3()).divideScalar(5);
+
+  const flatPos = [];
+  for(let i=1;i<verts.length-1;i++){
+    flatPos.push(...verts[0].toArray(),...verts[i].toArray(),...verts[i+1].toArray());
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(flatPos, 3));
+  geo.computeVertexNormals();
+
+  const mat = new THREE.MeshPhongMaterial({
+    color: COLORS[fi % COLORS.length],
+    transparent: true, opacity: 0.88,
+    side: THREE.DoubleSide, shininess: 60
+  });
+  group.add(new THREE.Mesh(geo, mat));
+
+  const edgePts = [...verts, verts[0]];
+  const edgeGeo = new THREE.BufferGeometry().setFromPoints(edgePts);
+  group.add(new THREE.Line(edgeGeo, new THREE.LineBasicMaterial({color: 0x222244})));
+});
+
+let isDragging=false, prevX=0, prevY=0, rotX=0.3, rotY=0.5, autoRotate=true;
+
+document.addEventListener('mousedown', e=>{isDragging=true;autoRotate=false;prevX=e.clientX;prevY=e.clientY;});
+document.addEventListener('mousemove', e=>{
+  if(!isDragging) return;
+  rotY+=(e.clientX-prevX)*0.01; rotX+=(e.clientY-prevY)*0.01;
+  prevX=e.clientX; prevY=e.clientY;
+});
+document.addEventListener('mouseup', ()=>isDragging=false);
+document.addEventListener('wheel', e=>{
+  camera.position.z=Math.max(2,Math.min(10,camera.position.z+e.deltaY*0.005));
+  e.preventDefault();
+},{passive:false});
+document.addEventListener('touchstart', e=>{isDragging=true;autoRotate=false;prevX=e.touches[0].clientX;prevY=e.touches[0].clientY;});
+document.addEventListener('touchmove', e=>{
+  if(!isDragging) return;
+  rotY+=(e.touches[0].clientX-prevX)*0.01; rotX+=(e.touches[0].clientY-prevY)*0.01;
+  prevX=e.touches[0].clientX; prevY=e.touches[0].clientY;
+  e.preventDefault();
+},{passive:false});
+document.addEventListener('touchend', ()=>isDragging=false);
+
+function animate(){
+  requestAnimationFrame(animate);
+  if(autoRotate) rotY+=0.005;
+  group.rotation.x=rotX; group.rotation.y=rotY;
+  renderer.render(scene,camera);
+}
+animate();
+</script>
+</body>
+</html>
