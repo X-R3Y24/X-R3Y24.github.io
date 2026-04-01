@@ -13,7 +13,7 @@
 | What was provided | a screenshot of a encrypted flag and the link to the server - https://dodecacrypt-949351df.challenges.bsidessf.net/. |
 | Goal | Guess the encrypted message by reverse engineering the cipher using the black-box endpoint |
 
-![Photo](../assets/img/posts/dodecacrypt/flag.png){: .w-50 .center}
+![Photo](/assets/img/posts/dodecacrypt/flag.png){: .w-50 .center}
 ### **Step 1 - cryptanalysis + getting key letters:**  
 So how did I approach the problem? When you first enter the site you see this: 
 
@@ -29,7 +29,7 @@ As we can see there isn’t a simple pattern in this ct. Then, let’s check the
   <img src="../assets/img/posts/dodecacrypt/keyA.png" width="100%">
   <img src="../assets/img/posts/dodecacrypt/keyB.png" width="100%">
 </div>
-![Photo](assets/img/posts/dodecacrypt/keyAB.png){: .w-50 .center}
+![Photo](../assets/img/posts/dodecacrypt/keyAB.png){: .w-50 .center}
 
 Knowing all of this let’s find which letters create the key. We’ll find it out by extracting them from the flag. Let’s notice that there are 12 distinct colors in our ct meaning we have 12 different letters in a key. The letters forming the key are: 
 
