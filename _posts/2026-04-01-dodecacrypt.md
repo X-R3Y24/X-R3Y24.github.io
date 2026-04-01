@@ -1,6 +1,5 @@
 ### **Intro**
 
-| Category | Info |
 |------|---------|
 | CTF | BSidesSF CTF 2026 |
 | Author | Symmetric |
