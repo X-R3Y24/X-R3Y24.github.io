@@ -12,8 +12,9 @@
 | Primitive | There isn’t really a primitive per se. That’s a black-box encryption oracle problem which needs to be reversed engineered. It’s just not IND-CPA secure, but that’s how it’s meant to be |
 | What was provided | a screenshot of a encrypted flag and the link to the server - https://dodecacrypt-949351df.challenges.bsidessf.net/. |
 | Goal | Guess the encrypted message by reverse engineering the cipher using the black-box endpoint |
-
-<img src="/assets/img/posts/dodecacrypt/flag.png" width="50%" style="display:block; margin:0 auto;" alt="Flag">
+<p aling=center>
+    <img src="/assets/img/posts/dodecacrypt/flag.png" width="50%" style="display:block; margin:0 auto;" alt="Flag">
+</p>
 ### **Step 1 - cryptanalysis + getting key letters:**  
 So how did I approach the problem? When you first enter the site you see this: 
 
