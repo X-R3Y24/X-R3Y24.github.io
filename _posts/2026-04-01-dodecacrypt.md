@@ -36,9 +36,9 @@ As we can see there isn’t a simple pattern in this ct. Then, let’s check the
   <img src="/assets/img/posts/dodecacrypt/keyB.png" width="48%" alt="Key B">
 </div>
 
-<div style="text-align:center">
+<p style="text-align:center">
     <img src="/assets/img/posts/dodecacrypt/keyAB.png" width="50%" style="display:block; margin:0 auto;" alt="Key AB">
-</div>
+</p>
 
 Knowing all of this let’s find which letters create the key. We’ll find it out by extracting them from the flag. Let’s notice that there are 12 distinct colors in our ct meaning we have 12 different letters in a key. The letters forming the key are: 
 
