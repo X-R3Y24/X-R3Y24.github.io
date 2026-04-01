@@ -13,15 +13,15 @@
 | What was provided | a screenshot of a encrypted flag and the link to the server - https://dodecacrypt-949351df.challenges.bsidessf.net/. |
 | Goal | Guess the encrypted message by reverse engineering the cipher using the black-box endpoint |
 
-![Photo](/assets/img/posts/dodecacrypt/flag.png){: .w-50 .center}
+<img src="/assets/img/posts/dodecacrypt/flag.png" width="50%" style="display:block; margin:auto;" alt="Flag">
 ### **Step 1 - cryptanalysis + getting key letters:**  
 So how did I approach the problem? When you first enter the site you see this: 
 
-![Photo](/assets/img/posts/dodecacrypt/homepage.png){: .w-50 .center}
+<img src="/assets/img/posts/dodecacrypt/homepage.png" width="50%" style="display:block; margin:auto;" alt="Flag">
 
 The first thing I noticed was a weird length of a message to length of a ciphertext ratio. 20 to 14? Was it this even? Ok, whatever. Anyway, let’s check the behavior when faced with a long message consisting of a single char: 
 
-![Photo](/assets/img/posts/dodecacrypt/longA.png){: .w-50 .center}
+<img src="/assets/img/posts/dodecacrypt/longA.png" width="50%" style="display:block; margin:auto;" alt="Flag">
 
 As we can see there isn’t a simple pattern in this ct. Then, let’s check the key. This is where the magic starts. No matter what you’ll type the key is always 12 chars long. And it only allows letters (the whole cipher uses upper case letters and when given a lower case letter it just uses to_upper on it. Hence, I’ll just type letters everywhere instead of upper case letters), 12? In a dodecahedron? I wonder why?. I then started encrypting a single char message with a single char key. As you imagine, every letter has its own color corresponding to it. And to make sure that every position in a key corresponds to a particular position on a big dode (yeah the reference to the big doge meme [big doge](https://ih1.redbubble.net/image.1286047921.7977/st,small,507x507-pad,600x600,f8f8f8.jpg)). One thing I also noticed is that each dodecahedron influences all of the dodecahedrons that follow, but not the ones that precede it. 
 
@@ -30,11 +30,11 @@ As we can see there isn’t a simple pattern in this ct. Then, let’s check the
   <img src="/assets/img/posts/dodecacrypt/keyB.png" width="48%" alt="Key B">
 </div>
 
-![Photo](/assets/img/posts/dodecacrypt/keyAB.png){: .w-50 .center}
+<img src="/assets/img/posts/dodecacrypt/keyAB.png" width="50%" style="display:block; margin:auto;" alt="Flag">
 
 Knowing all of this let’s find which letters create the key. We’ll find it out by extracting them from the flag. Let’s notice that there are 12 distinct colors in our ct meaning we have 12 different letters in a key. The letters forming the key are: 
 
-![Photo](/assets/img/posts/dodecacrypt/letters.png)
+<img src="/assets/img/posts/dodecacrypt/letters.png" width="50%" style="display:block; margin:auto;" alt="Flag">
 
 ### **Step 2 - remembering icosahedral groups and finding boundaries:**
 
@@ -72,7 +72,7 @@ def num_to_msg(n: int) -> str:
     return "".join(chars)
 ```
 
-![Photo](/assets/img/posts/dodecacrypt/encoding.png)
+<img src="/assets/img/posts/dodecacrypt/encoding.png" width="50%" style="display:block; margin:auto;" alt="Flag">
 
 For those who are unfamiliar with dodecahedron symmetry group – 120 is the size of such group. Meaning that every dodecahedron with no two matching sides can be put on a table in 120 different ways. 
 
