@@ -36,7 +36,7 @@ As we can see there isn’t a simple pattern in this ct. Then, let’s check the
   <img src="/assets/img/posts/dodecacrypt/keyB.png" width="48%" alt="Key B">
 </div>
 
-<p style="text-align:center">
+<p align="center">
     <img src="/assets/img/posts/dodecacrypt/keyAB.png" width="50%" style="display:block; margin:0 auto;" alt="Key AB">
 </p>
 
